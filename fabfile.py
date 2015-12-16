@@ -3,7 +3,7 @@
 import os
 import ConfigParser
 
-from fabric.api import env, task, roles, put, cd, hosts
+from fabric.api import env, task, roles, put, cd, hosts, local
 
 from boto.s3.key import Key
 from boto.s3.connection import S3Connection
@@ -40,3 +40,14 @@ def deploy_files():
     index.key = 'index.html'
     index.set_contents_from_filename('./files/index.html')
     index.set_acl('public-read')
+
+
+@task
+@hosts('localhost')
+def update_landing_page():
+    dropshare_landing_page = os.path.expanduser(('~/Library/Containers/'
+                                                 'net.mkswap.Dropshare/Data/'
+                                                 'Documents/'
+                                                 'Dropshare-LandingPage.html'))
+
+    local('cp ./files/landing-page.html ' + dropshare_landing_page)
