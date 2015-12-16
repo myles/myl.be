@@ -3,7 +3,7 @@
 import os
 import ConfigParser
 
-from fabric.api import env, task, roles, put, cd, local, hosts
+from fabric.api import env, task, roles, put, cd, hosts
 
 from boto.s3.key import Key
 from boto.s3.connection import S3Connection
