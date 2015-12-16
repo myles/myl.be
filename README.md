@@ -1,10 +1,3 @@
 # myl.be
 
-## `./www/`
-
-[YOURLS](http://yourls.org/) stuff.
-
-## `./files/`
-
-[Dropshare](https://getdropsha.re/) stuff.
-
+My [URL shortening](https://en.wikipedia.org/wiki/URL_shortening) service based on the web based [YOURLS](http://yourls.org/) and OS X/iOS based [Dropshare](https://getdropsha.re/).
