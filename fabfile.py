@@ -24,6 +24,7 @@ def deploy_www():
         put('./www/index.php', 'index.php')
         put('./www/json.php', 'json.php')
         put('./www/rss.php', 'rss.php')
+        put('./www/csv.php', 'csv.php')
 
 
 @task
