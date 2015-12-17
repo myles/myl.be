@@ -10,6 +10,9 @@ if ($db) {
 	$urls = $db->get_results('SELECT `keyword`, `url`, `title`, `timestamp`, `clicks` FROM `' . YOURLS_DB_TABLE_URL . '` ORDER BY `timestamp` DESC LIMIT 20');
 }
 
+// Let make sure we are serving the right type.
+header('Content-Type: application/json');
+
 // Encode the array to json
 echo json_encode($urls);
 ?>
