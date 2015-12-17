@@ -22,6 +22,7 @@ env.roledefs = {
 def deploy_www():
     with cd('/home/public/'):
         put('./www/index.php', 'index.php')
+        put('./www/json.php', 'json.php')
         put('./www/rss.php', 'rss.php')
 
 
