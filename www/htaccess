@@ -1,0 +1,7 @@
+RewriteEngine On
+RewriteBase /
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^.*$ /yourls-loader.php [L]
+RewriteRule ^sitemap\.xml$ sitemap.php [NC,L]
+RewriteRule ^rss\.xml$ rss.php [NC,L]
