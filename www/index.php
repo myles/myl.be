@@ -131,7 +131,7 @@ if ($db) {
 			<div class="footer">
 				<hr>
 				
-				<p>Made by <a href="http://mylesbraithwaite.com/" title="Myles Alden Braithwaite">Myles Braithwaite</a> with <i class="fa fa-heart"></i> in Toronto.</p>
+				<p>Made by <a href="http://mylesb.ca/" title="Myles Alden Braithwaite">Myles Braithwaite</a> with <i class="fa fa-heart"></i> in Toronto.</p>
 				
 				<?php yourls_html_footer(); ?>
 			</div>
