@@ -49,9 +49,9 @@ def deploy_files():
 @task
 @hosts('localhost')
 def update_landing_page():
-    dropshare_landing_page = os.path.expanduser(('~/Library/Containers/'
-                                                 'net.mkswap.Dropshare/Data/'
-                                                 'Documents/'
-                                                 'Dropshare-LandingPage.html'))
+    dropshare_landing_page = os.path.expanduser(('~/Library/'
+                                                 'Application Support/'
+                                                 'Dropshare 4/'
+                                                 'CustomLandingPage.html'))
 
-    local('cp ./files/landing-page.html ' + dropshare_landing_page)
+    local('cp ./files/landing-page.html "{0}"'.format(dropshare_landing_page))
