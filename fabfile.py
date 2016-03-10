@@ -73,15 +73,19 @@ def backup_mysql():
         'timestamp': timestamp
     }
 
+    local_file_name = os.path.join('./backups/', os.path.basename(file_name))
+
     run('mysqldump -u %(username)s -p%(password)s %(database)s | '
         'gzip > %(file_name)s' % {'username': env.database_username,
                                   'password': env.database_password,
                                   'database': env.database_name,
                                   'file_name': file_name})
 
-    get(file_name, os.path.join('./backups/', os.path.basename(file_name)))
+    get(file_name, local_file_name)
 
     run('rm "%s"' % file_name)
+
+    return local_file_name
 
 
 @task
@@ -89,12 +93,19 @@ def backup_mysql():
 def backup_config():
     timestamp = datetime.datetime.now().isoformat().replace(':', '-')
 
-    get('html/user/config.php',
-        './backups/config-backup-%(timestamp)s.php' % {'timestamp': timestamp})
+    local_file_name = './backups/config-backup-%(timestamp)s.php' % {
+        'timestamp': timestamp}
+
+    get('html/user/config.php', local_file_name)
+
+    return local_file_name
 
 
 @task
 @roles('yourls')
 def backup():
-    backup_mysql()
-    backup_config()
+    mysql_backup_file = backup_mysql()
+    config_backup_file = backup_config()
+
+    for file in [mysql_backup_file, config_backup_file]:
+        local('gpg --encrypt --armor --recipient 5B423590 ' + file)
