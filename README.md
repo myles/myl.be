@@ -4,7 +4,7 @@ My [URL shortening](https://en.wikipedia.org/wiki/URL_shortening) service based 
 
 ## Fabric Commands
 
-* `fab deploy_www`: Deploy some stuff to <http://myl.be/>
+* `fab deploy_www`: Deploy some stuff to <https://myl.be/>
 * `fab deploy_files`: Deploy some stuff to <http://files.myl.be/>
 * `fab update_landing_page`: Update the Landing Page for Droupshare drops.
 * `fab backup_mysql`: Backup YOURLS' MySQL database.

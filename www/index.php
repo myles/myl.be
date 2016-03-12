@@ -79,7 +79,7 @@ if ($db) {
         <nav class="navbar navbar-inverse navbar-static-top">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="http://myl.be/">Myl.Be</a>
+                    <a class="navbar-brand" href="https://myl.be/">Myl.Be</a>
                 </div>
                 <div id="navbar" class="hidden-xs">
                     <ul class="nav navbar-nav navbar-right">
