@@ -24,7 +24,7 @@ echo '<?' . 'xml version="1.0" encoding="UTF-8" ?>';
 		
 		<item>
 			<title><?php echo yourls_esc_html( $item['title'] ); ?></title>
-			<description><?php echo htmlentities( $item['url'] ); ?></description>
+			<description><?php echo htmlentities( $item['url'] ); ?><?php echo htmlentities( '<img src="https://piwik.mylesb.ca/piwik.php?idsite=15&rec=1" style="border:0" alt="" />' ); ?></description>
 			<pubDate><?php echo date('D, d M Y H:i:s O', strtotime($item['timestamp']) ); ?></pubDate>
 			<link><?php echo $item['shorturl']; ?></link>
 			<guid isPermaLink="false"><?php echo $item['shorturl']; ?></guid>
