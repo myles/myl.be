@@ -76,7 +76,7 @@ if ($db) {
     <!-- Piwik -->
     <script type="text/javascript">
       var _paq = _paq || [];
-      _paq.push(["setDomains", ["myl.be","*.myl.be"]]);
+      _paq.push(["setDomains", ["myl.be","www.myl.be"]]);
       _paq.push(['trackPageView']);
       _paq.push(['enableLinkTracking']);
       (function() {
