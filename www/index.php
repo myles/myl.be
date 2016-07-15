@@ -8,6 +8,24 @@ $db = yourls_db_connect();
 // How many rows per page
 $rows_per_page = 15;
 
+// Get media type
+if (isset($_GET['media'])) {
+  $media = $_GET['media'];
+} else {
+  $media = NULL;
+}
+
+// Get query based off media type
+if ($media == 'image') {
+  $media_query = " WHERE `title` LIKE '%.gif' OR `title` LIKE '%.png' OR `title` LIKE '%.jpg' OR `title` LIKE '%.jpeg' ";
+} elseif ($media == 'video') {
+  $media_query = " WHERE `title` LIKE '%.mov' OR `title` LIKE '%.mp4' OR `title` LIKE '%.wmv' OR `title` LIKE '%.webm' OR `url` LIKE '%youtube.com%' OR `url` LIKE '%vimeo.com%' ";
+} elseif ($media == 'audio') {
+  $media_query = " WHERE `title` LIKE '%.mp3' OR `title` LIKE '%.wav' ";
+} elseif ($media == 'doc') {
+  $media_query = " WHERE `title` LIKE '%.pdf' OR `url` LIKE '%.pdf' ";
+}
+
 // Get the page number
 if (isset($_GET['page'])) {
 	$page = $_GET['page'];
@@ -19,7 +37,12 @@ if (isset($_GET['page'])) {
 $numrows = $rows_per_page;
 
 if ($db) {
-  $query_data = $db->get_results("SELECT count(keyword) AS count FROM `" . YOURLS_DB_TABLE_URL . "`");
+  if ($media) {
+    $query_data = $db->get_results("SELECT count(keyword) AS count FROM `" . YOURLS_DB_TABLE_URL. "` " . $media_query);
+  } else {
+    $query_data = $db->get_results("SELECT count(keyword) AS count FROM `" . YOURLS_DB_TABLE_URL . "`");
+  }
+  
   $numrows = $query_data[0]->count;
 }
 
@@ -43,7 +66,11 @@ $limit_query = 'LIMIT ' . ($page - 1) * $rows_per_page . ',' . $rows_per_page;
 // Get the Short URLs
 $urls = null;
 if ($db) {
-	$urls = $db->get_results('SELECT `keyword`, `url`, `title`, `timestamp`, `clicks` FROM `' . YOURLS_DB_TABLE_URL . '`  ORDER BY `timestamp` DESC ' . $limit_query);
+  if ($media) {
+    $urls = $db->get_results('SELECT `keyword`, `url`, `title`, `timestamp`, `clicks` FROM `' . YOURLS_DB_TABLE_URL . '`' . $media_query . 'ORDER BY `timestamp` DESC ' . $limit_query);
+  } else {
+    $urls = $db->get_results('SELECT `keyword`, `url`, `title`, `timestamp`, `clicks` FROM `' . YOURLS_DB_TABLE_URL . '`  ORDER BY `timestamp` DESC ' . $limit_query);
+  }
 }
 ?><!DOCTYPE html>
 <html lang="en">
