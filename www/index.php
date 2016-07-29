@@ -18,6 +18,8 @@ if (isset($_GET['media'])) {
 // Get query based off media type
 if ($media == 'image') {
   $media_query = " WHERE `title` LIKE '%.gif' OR `title` LIKE '%.png' OR `title` LIKE '%.jpg' OR `title` LIKE '%.jpeg' ";
+} elseif ($media == 'gif') {
+  $media_query = " WHERE `title` LIKE '%.gif' ";
 } elseif ($media == 'video') {
   $media_query = " WHERE `title` LIKE '%.mov' OR `title` LIKE '%.mp4' OR `title` LIKE '%.wmv' OR `title` LIKE '%.webm' OR `url` LIKE '%youtube.com%' OR `url` LIKE '%vimeo.com%' ";
 } elseif ($media == 'audio') {
