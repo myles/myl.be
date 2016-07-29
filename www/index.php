@@ -11,21 +11,32 @@ $rows_per_page = 15;
 // Get media type
 if (isset($_GET['media'])) {
   $media = $_GET['media'];
+  
+  // Get query based off media type
+  if ($media == 'image') {
+    $media_query = "`title` LIKE '%.gif' OR `title` LIKE '%.png' OR `title` LIKE '%.jpg' OR `title` LIKE '%.jpeg'";
+  } elseif ($media == 'gif') {
+    $media_query = "`title` LIKE '%.gif'";
+  } elseif ($media == 'video') {
+    $media_query = "`title` LIKE '%.mov' OR `title` LIKE '%.mp4' OR `title` LIKE '%.wmv' OR `title` LIKE '%.webm' OR `url` LIKE '%youtube.com%' OR `url` LIKE '%vimeo.com%'";
+  } elseif ($media == 'audio') {
+    $media_query = "`title` LIKE '%.mp3' OR `title` LIKE '%.wav'";
+  } elseif ($media == 'doc') {
+    $media_query = "`title` LIKE '%.pdf' OR `url` LIKE '%.pdf'";
+  } elseif ($media == 'archive') {
+    $media_query = "`title` LIKE '%.zip' OR `url` LIKE '%.tar.gz' OR `url` LIKE '%.tar' OR `url` LIKE '%.rar'";
+  } else {
+    $media_query = NULL;
+  }
 } else {
-  $media = NULL;
+  $media_query = NULL;
 }
 
-// Get query based off media type
-if ($media == 'image') {
-  $media_query = " WHERE `title` LIKE '%.gif' OR `title` LIKE '%.png' OR `title` LIKE '%.jpg' OR `title` LIKE '%.jpeg' ";
-} elseif ($media == 'gif') {
-  $media_query = " WHERE `title` LIKE '%.gif' ";
-} elseif ($media == 'video') {
-  $media_query = " WHERE `title` LIKE '%.mov' OR `title` LIKE '%.mp4' OR `title` LIKE '%.wmv' OR `title` LIKE '%.webm' OR `url` LIKE '%youtube.com%' OR `url` LIKE '%vimeo.com%' ";
-} elseif ($media == 'audio') {
-  $media_query = " WHERE `title` LIKE '%.mp3' OR `title` LIKE '%.wav' ";
-} elseif ($media == 'doc') {
-  $media_query = " WHERE `title` LIKE '%.pdf' OR `url` LIKE '%.pdf' ";
+// Get search query
+if (isset($_GET['q'])) {
+  $search_query = "`title` LIKE '%" . $_GET['q'] . "%'";
+} else {
+  $search_query = NULL;
 }
 
 // Get the page number
@@ -68,10 +79,14 @@ $limit_query = 'LIMIT ' . ($page - 1) * $rows_per_page . ',' . $rows_per_page;
 // Get the Short URLs
 $urls = null;
 if ($db) {
-  if ($media) {
-    $urls = $db->get_results('SELECT `keyword`, `url`, `title`, `timestamp`, `clicks` FROM `' . YOURLS_DB_TABLE_URL . '`' . $media_query . 'ORDER BY `timestamp` DESC ' . $limit_query);
+  if ($search_query and $media) {
+    $urls = $db->get_results('SELECT `keyword`, `url`, `title`, `timestamp`, `clicks` FROM `' . YOURLS_DB_TABLE_URL . '` WHERE ' . $search_query . ' AND ' . $media_query . ' ORDER BY `timestamp` DESC ' . $limit_query);
+  } elseif ($media) {
+    $urls = $db->get_results('SELECT `keyword`, `url`, `title`, `timestamp`, `clicks` FROM `' . YOURLS_DB_TABLE_URL . '` WHERE ' . $media_query . ' ORDER BY `timestamp` DESC ' . $limit_query);
+  } elseif ($search_query) {
+    $urls = $db->get_results('SELECT `keyword`, `url`, `title`, `timestamp`, `clicks` FROM `' . YOURLS_DB_TABLE_URL . '` WHERE ' . $search_query . ' ORDER BY `timestamp` DESC ' . $limit_query);
   } else {
-    $urls = $db->get_results('SELECT `keyword`, `url`, `title`, `timestamp`, `clicks` FROM `' . YOURLS_DB_TABLE_URL . '`  ORDER BY `timestamp` DESC ' . $limit_query);
+    $urls = $db->get_results('SELECT `keyword`, `url`, `title`, `timestamp`, `clicks` FROM `' . YOURLS_DB_TABLE_URL . '` ORDER BY `timestamp` DESC ' . $limit_query);
   }
 }
 ?><!DOCTYPE html>
@@ -149,6 +164,44 @@ if ($db) {
   			<h1>Myl.Be <small>Another Personal Short URL Service</small></h1>
   		</div>
   		
+      <?php
+        if (isset($_GET['q'])) {
+          $get_query = urldecode($_GET['q']);
+        } else {
+          $get_query = NULL;
+        }
+        
+        if (isset($_GET['media'])) {
+          $get_media = urldecode($_GET['media']);
+        } else {
+          $get_media = 'all';
+        }
+      ?>
+      
+      <form action="index.php" method="get" class="form-inline text-center">
+        <div class="form-group">
+          <label for="input-query">Query</label>
+          <input type="search" class="form-control" id="input-query" name="q" value="<?php echo $get_query; ?>">
+        </div>
+        
+        <div class="form-group">
+          <label for="select-media">Media</label>
+          <select class="form-control" id="select-media" name="media">
+            <option value="">All</option>
+            <option value="image">Image</option>
+            <option value="gif">GIF</option>
+            <option value="video">Video</option>
+            <option value="audio">Audio</option>
+            <option value="doc">Document</option>
+            <option value="archive">Archive</option>
+          </select>
+        </div>
+        
+        <button type="submit" class="btn btn-default">Search</button>
+      </form>
+      
+      <hr>
+      
   		<div class="list-group">
   		<?php foreach ($urls as $short): ?>
   			<a href="<?php echo YOURLS_SITE . "/" . $short->keyword; ?>" class="list-group-item" title="<?php echo $short->title; ?>">
