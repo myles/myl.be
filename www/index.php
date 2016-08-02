@@ -8,10 +8,54 @@ $db = yourls_db_connect();
 // How many rows per page
 $rows_per_page = 15;
 
+function clean($string) {
+  // Replaces all spaces with hyphens.
+  $string = str_replace(' ', '-', $string);
+
+  // Removes special chars.
+  return preg_replace('/[^A-Za-z0-9\-]/', '', $string);
+}
+
+$media_types = array(
+  'image' => array(
+    'display' => 'Image',
+    'queries' => array('%.gif', '%.png', '%.jpg', '%.jpeg')
+  ),
+  'gif' => array(
+    'display' => 'GIF',
+    'queries' => array('%.gif', '%.gifv')
+  ),
+  'video' => array(
+    'display' => 'Video',
+    'title_queries' => array('%.mov', '%.mp4', '%.wmv', '%webm'),
+    'url_queries' => array('%youtube.com%', '%vimeo.com%')
+  ),
+  'audio' => array(
+    'display' => 'Audio',
+    'queries' => array('%.mp3', '%.wav')
+  ),
+  'doc' => array(
+    'display' => 'Document',
+    'title_queries' => array('%.pdf'),
+    'url_queries' => array('%.pdf')
+  ),
+  'archive' => array(
+    'display' => 'Archive',
+    'title_queries' => array('%.zip', '%.tar.gz', '%.tar', '%.rar'),
+    'url_queries' => array('%.zip', '%.tar.gz', '%.tar', '%.rar')
+  ),
+  'egocentric' => array(
+    'display' => 'Egocentric',
+    'url_queries' => array('%myles.life%', '%mylesb.ca%', '%mylesbraithwaite.com%', '%mylesbraithwaite.org%', '%twitter.com/mylesb%', '%myles.red%', '%youaretheworst.today%')
+  )
+);
+
 // Get media type
 if (isset($_GET['media'])) {
-  $media = $_GET['media'];
-  
+  $media = clean($_GET['media']);
+
+  $media_info = $media_types[$media];
+
   // Get query based off media type
   if ($media == 'image') {
     $media_query = "`title` LIKE '%.gif' OR `title` LIKE '%.png' OR `title` LIKE '%.jpg' OR `title` LIKE '%.jpeg'";
@@ -34,14 +78,14 @@ if (isset($_GET['media'])) {
 
 // Get search query
 if (isset($_GET['q'])) {
-  $search_query = "`title` LIKE '%" . $_GET['q'] . "%'";
+  $search_query = "`title` LIKE '%" . clean($_GET['q']) . "%'";
 } else {
   $search_query = NULL;
 }
 
 // Get the page number
 if (isset($_GET['page'])) {
-	$page = $_GET['page'];
+	$page = intval($_GET['page']);
 } else {
 	$page = 1;
 }
@@ -188,12 +232,9 @@ if ($db) {
           <label for="select-media">Media</label>
           <select class="form-control" id="select-media" name="media">
             <option value="">All</option>
-            <option value="image">Image</option>
-            <option value="gif">GIF</option>
-            <option value="video">Video</option>
-            <option value="audio">Audio</option>
-            <option value="doc">Document</option>
-            <option value="archive">Archive</option>
+            <?php foreach ($media_types as $media => $info) { ?>
+            <option value="<?php echo $media; ?>" <?php if ($_GET['media'] == $media) { ?>selected<?php } ?>><?php echo $info['display'] ?></option>
+            <?php } ?>
           </select>
         </div>
         
